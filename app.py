@@ -2,13 +2,13 @@ import pickle
 from flask import Flask, request, jsonify
 import pandas as pd
 
+app = Flask(__name__)
+
 MODEL_PATH = 'Auto_Viz_marketing_model.pkl'
 
 # Load the trained model
 with open(MODEL_PATH, 'rb') as file:
     loaded_model = pickle.load(file)
-
-app = Flask(__name__)
 
 # Define a simple home route for testing
 @app.route('/', methods=['GET'])
