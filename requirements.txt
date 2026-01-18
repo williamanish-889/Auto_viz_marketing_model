@@ -1,6 +1,4 @@
-pandas
 flask
-scikit-learn
-pyngrok
-pickle
-
+joblib
+pandas 
+numpy
