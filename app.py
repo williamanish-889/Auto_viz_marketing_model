@@ -14,7 +14,7 @@ model = joblib.load(MODEL_PATH)
 def home():
     return "Marketing Model API is running! Use the /predict endpoint for results."
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET', 'POST'])
 def predict():
     # ... (your existing prediction code) ...
     return jsonify({"prediction": 0.0}) # Example placeholder
