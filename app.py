@@ -15,102 +15,223 @@ HTML_TEMPLATE = '''
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Auto-Viz Marketing Model Predictor</title>
+    <title>Auto-Viz Marketing Conversion Predictor</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
+            max-width: 700px;
             margin: 50px auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
         .container {
             background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         h1 {
             color: #333;
             text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            text-align: center;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             color: #555;
             font-weight: bold;
+            font-size: 14px;
+        }
+        .input-wrapper {
+            position: relative;
         }
         input[type="number"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
             box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .helper-text {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
         }
         button {
             width: 100%;
-            padding: 12px;
-            background-color: #4CAF50;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
+            font-weight: bold;
             margin-top: 10px;
+            transition: transform 0.2s;
         }
         button:hover {
-            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
         }
         #result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
             display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .success {
             background-color: #d4edda;
-            border: 1px solid #c3e6cb;
+            border: 2px solid #c3e6cb;
             color: #155724;
+        }
+        .success .prediction-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #28a745;
+            text-align: center;
+            margin: 15px 0;
         }
         .error {
             background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
+            border: 2px solid #f5c6cb;
             color: #721c24;
+        }
+        .result-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+        }
+        .metric-label {
+            font-weight: bold;
+        }
+        .ctr-display {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Marketing Sales Predictor</h1>
+        <h1>🎯 Marketing Conversion Predictor</h1>
+        <div class="subtitle">Predict conversions based on impressions and clicks</div>
+        
+        <div class="info">
+            <strong>📊 Model Prediction:</strong> This model predicts the number of <strong>conversions</strong> you can expect based on your marketing campaign's impressions and clicks.
+        </div>
+        
         <form id="predictionForm">
             <div class="form-group">
-                <label for="tv">TV Budget ($1000s):</label>
-                <input type="number" step="0.01" id="tv" name="TV" placeholder="e.g., 230.1" required>
+                <label for="impressions">👁️ Impressions:</label>
+                <div class="input-wrapper">
+                    <input type="number" step="1" id="impressions" name="impressions" 
+                           placeholder="e.g., 50000" required min="0">
+                </div>
+                <div class="helper-text">Total number of times your ad was displayed</div>
             </div>
+            
             <div class="form-group">
-                <label for="radio">Radio Budget ($1000s):</label>
-                <input type="number" step="0.01" id="radio" name="Radio" placeholder="e.g., 37.8" required>
+                <label for="clicks">🖱️ Clicks:</label>
+                <div class="input-wrapper">
+                    <input type="number" step="1" id="clicks" name="clicks" 
+                           placeholder="e.g., 1500" required min="0">
+                </div>
+                <div class="helper-text">Number of times users clicked on your ad</div>
             </div>
-            <div class="form-group">
-                <label for="newspaper">Newspaper Budget ($1000s):</label>
-                <input type="number" step="0.01" id="newspaper" name="Newspaper" placeholder="e.g., 69.2" required>
+            
+            <div class="ctr-display" id="ctrDisplay" style="display: none;">
+                <strong>Click-Through Rate (CTR):</strong> <span id="ctrValue">0%</span>
             </div>
-            <button type="submit">Predict Sales</button>
+            
+            <button type="submit">🚀 Predict Conversions</button>
         </form>
+        
         <div id="result"></div>
     </div>
 
     <script>
+        // Calculate and display CTR as user types
+        function updateCTR() {
+            const impressions = parseFloat(document.getElementById('impressions').value) || 0;
+            const clicks = parseFloat(document.getElementById('clicks').value) || 0;
+            
+            if (impressions > 0 && clicks > 0) {
+                const ctr = (clicks / impressions * 100).toFixed(2);
+                document.getElementById('ctrValue').textContent = ctr + '%';
+                document.getElementById('ctrDisplay').style.display = 'block';
+            } else {
+                document.getElementById('ctrDisplay').style.display = 'none';
+            }
+        }
+        
+        document.getElementById('impressions').addEventListener('input', updateCTR);
+        document.getElementById('clicks').addEventListener('input', updateCTR);
+        
         document.getElementById('predictionForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            const impressions = parseFloat(document.getElementById('impressions').value);
+            const clicks = parseFloat(document.getElementById('clicks').value);
+            
+            // Validation
+            if (clicks > impressions) {
+                const resultDiv = document.getElementById('result');
+                resultDiv.className = 'error';
+                resultDiv.innerHTML = `<strong>⚠️ Validation Error:</strong> Clicks cannot exceed Impressions!`;
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
             const formData = {
-                TV: parseFloat(document.getElementById('tv').value),
-                Radio: parseFloat(document.getElementById('radio').value),
-                Newspaper: parseFloat(document.getElementById('newspaper').value)
+                impressions: impressions,
+                clicks: clicks
             };
 
             try {
@@ -126,17 +247,47 @@ HTML_TEMPLATE = '''
                 const resultDiv = document.getElementById('result');
                 
                 if (response.ok) {
+                    const ctr = (clicks / impressions * 100).toFixed(2);
+                    const conversionRate = (data.prediction / clicks * 100).toFixed(2);
+                    
                     resultDiv.className = 'success';
-                    resultDiv.innerHTML = `<strong>Predicted Sales:</strong> $${(data.prediction * 1000).toFixed(2)}`;
+                    resultDiv.innerHTML = `
+                        <div style="text-align: center;">
+                            <strong>✅ Predicted Conversions</strong>
+                            <div class="prediction-value">${Math.round(data.prediction)}</div>
+                        </div>
+                        <div class="result-details">
+                            <div class="metric">
+                                <span class="metric-label">Impressions:</span>
+                                <span>${impressions.toLocaleString()}</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Clicks:</span>
+                                <span>${clicks.toLocaleString()}</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Click-Through Rate (CTR):</span>
+                                <span>${ctr}%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Conversion Rate:</span>
+                                <span>${conversionRate}%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Cost Per Conversion (if CPC=$1):</span>
+                                <span>$${(clicks / data.prediction).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
                 } else {
                     resultDiv.className = 'error';
-                    resultDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+                    resultDiv.innerHTML = `<strong>❌ Error:</strong> ${data.error}`;
                 }
                 resultDiv.style.display = 'block';
             } catch (error) {
                 const resultDiv = document.getElementById('result');
                 resultDiv.className = 'error';
-                resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                resultDiv.innerHTML = `<strong>❌ Error:</strong> ${error.message}`;
                 resultDiv.style.display = 'block';
             }
         });
@@ -154,53 +305,99 @@ def predict():
     try:
         # ---- GET: Browser query params ----
         if request.method == 'GET':
-            tv = request.args.get("TV")
-            radio = request.args.get("Radio")
-            newspaper = request.args.get("Newspaper")
+            impressions = request.args.get("impressions")
+            clicks = request.args.get("clicks")
         # ---- POST: JSON body ----
         else:
             data = request.get_json(force=True)
-            tv = data.get("TV")
-            radio = data.get("Radio")
-            newspaper = data.get("Newspaper")
+            impressions = data.get("impressions")
+            clicks = data.get("clicks")
 
         # ---- Validate inputs ----
-        if tv is None or radio is None or newspaper is None:
+        if impressions is None or clicks is None:
             return jsonify({
-                "error": "Missing input features. Required: TV, Radio, Newspaper"
+                "error": "Missing input features. Required: impressions, clicks"
             }), 400
 
         # ---- Convert to float and validate ----
         try:
-            tv = float(tv)
-            radio = float(radio)
-            newspaper = float(newspaper)
+            impressions = float(impressions)
+            clicks = float(clicks)
         except ValueError:
             return jsonify({
                 "error": "All inputs must be valid numbers"
             }), 400
 
-        # ---- Create DataFrame ----
-        input_df = pd.DataFrame([{
-            "TV": tv,
-            "Radio": radio,
-            "Newspaper": newspaper
-        }])
+        # Additional validation
+        if impressions < 0 or clicks < 0:
+            return jsonify({
+                "error": "Impressions and clicks must be non-negative"
+            }), 400
+
+        if clicks > impressions:
+            return jsonify({
+                "error": "Clicks cannot exceed impressions"
+            }), 400
+
+        # ---- Create DataFrame with EXACT feature order from training ----
+        # Your model was trained with x=df[["impressions", "clicks"]]
+        # So we must maintain this exact order
+        input_df = pd.DataFrame([[impressions, clicks]], 
+                                columns=["impressions", "clicks"])
 
         # ---- Prediction ----
         prediction = model.predict(input_df)
         
+        # Calculate additional metrics
+        ctr = (clicks / impressions * 100) if impressions > 0 else 0
+        
         return jsonify({
             "prediction": float(prediction[0]),
+            "predicted_conversions": round(float(prediction[0])),
             "inputs": {
-                "TV": tv,
-                "Radio": radio,
-                "Newspaper": newspaper
+                "impressions": int(impressions),
+                "clicks": int(clicks)
+            },
+            "metrics": {
+                "ctr_percentage": round(ctr, 2),
+                "conversion_rate_percentage": round((prediction[0] / clicks * 100), 2) if clicks > 0 else 0
             }
         })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/model-info', methods=['GET'])
+def model_info():
+    """Endpoint to check model feature names and details"""
+    try:
+        info = {
+            "model_type": str(type(model).__name__),
+            "prediction_target": "conversions"
+        }
+        
+        # Try to get feature names from the model
+        if hasattr(model, 'feature_names_in_'):
+            info["feature_names"] = list(model.feature_names_in_)
+        else:
+            info["expected_features"] = ["impressions", "clicks"]
+        
+        # Try to get model parameters
+        if hasattr(model, 'get_params'):
+            info["model_parameters"] = model.get_params()
+        
+        return jsonify(info)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/health', methods=['GET'])
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        "status": "healthy",
+        "model_loaded": model is not None,
+        "message": "Auto-Viz Marketing Conversion Predictor API is running"
+    })
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
