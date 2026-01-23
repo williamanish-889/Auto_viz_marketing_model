@@ -17,31 +17,42 @@ def home():
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     try:
-        # ---- HANDLE GET (Browser) ----
+        # ---- GET: Browser query params ----
         if request.method == 'GET':
-            data = request.args
+            tv = request.args.get("TV")
+            radio = request.args.get("Radio")
+            newspaper = request.args.get("Newspaper")
+
+        # ---- POST: JSON body ----
         else:
             data = request.get_json(force=True)
+            tv = data.get("TV")
+            radio = data.get("Radio")
+            newspaper = data.get("Newspaper")
 
+        # ---- Validate inputs ----
+        if tv is None or radio is None or newspaper is None:
+            return jsonify({
+                "error": "Missing input features. Required: TV, Radio, Newspaper"
+            }), 400
+
+        # ---- Create DataFrame ----
         input_df = pd.DataFrame([{
-            "TV": float(data["TV"]),
-            "Radio": float(data["Radio"]),
-            "Newspaper": float(data["Newspaper"])
+            "TV": float(tv),
+            "Radio": float(radio),
+            "Newspaper": float(newspaper)
         }])
 
+        # ---- Prediction ----
         prediction = model.predict(input_df)
 
         return jsonify({
             "prediction": float(prediction[0])
         })
 
-    except KeyError:
-        return jsonify({
-            "error": "Missing input features. Required: TV, Radio, Newspaper"
-        }), 400
-
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 
