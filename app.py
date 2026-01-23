@@ -17,16 +17,18 @@ def home():
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     try:
-        data = request.get_json()
+        # ---- HANDLE GET (Browser) ----
+        if request.method == 'GET':
+            data = request.args
+        else:
+            data = request.get_json(force=True)
 
-        # Convert JSON → DataFrame (BEST PRACTICE)
         input_df = pd.DataFrame([{
             "TV": float(data["TV"]),
             "Radio": float(data["Radio"]),
             "Newspaper": float(data["Newspaper"])
         }])
 
-        # Prediction
         prediction = model.predict(input_df)
 
         return jsonify({
@@ -40,6 +42,7 @@ def predict():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 if __name__ == "__main__":
